@@ -24,7 +24,7 @@ clc
 % Alternatively, we can specify my_dir manually:
 % mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';
 
-mydir = 'C:/Users/holta/Documents';
+mydir = 'E:/SDSU_GEOG/Thesis/Data/Gages-II/usgs_streamflow/mm_day';
 cd(mydir)
 addpath(genpath(mydir));
 
@@ -52,13 +52,13 @@ addpath(genpath(mydir));
 
 
 % Load the CSV file into a table
-filename_test = 'daily_discharge_test.csv';
+filename_test = '01607500.csv';
 opts = detectImportOptions(filename_test)
 data = readtable(filename_test, opts);
 
 % Access the columns by variable names
 t = datetime(data.datetime);
-Q = data.q_daily_mm_day;
+Q = data.q_mm_day;
 % Add more variable assignments as needed
 
 % Now you can work with the variables
