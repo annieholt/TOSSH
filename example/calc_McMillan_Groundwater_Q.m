@@ -25,7 +25,9 @@ function [results] = calc_McMillan_Groundwater_Q(csv_filename)
     % Initialize results structure
     results = struct();
 
-    % fill variables with NaNs for now
+    % fill variables with NaNs for now, except gauge_id
+    gauge_id_extract = regexp(csv_filename, '\d+', 'match');
+    gauge_id = str2double(gauge_id_extract{1});
     Mid_Recession_Slope = NaN;
     Recession_a_Seasonality = NaN;
     Recession_a_Seasonality_error_str = strings;
@@ -73,6 +75,7 @@ function [results] = calc_McMillan_Groundwater_Q(csv_filename)
 
 
     % add results to struct array
+    results.gauge_id = gauge_id;
     results.Recession_a_Seasonality = Recession_a_Seasonality;
     results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
 
