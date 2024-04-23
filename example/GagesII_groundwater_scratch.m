@@ -24,7 +24,10 @@ clc
 % Alternatively, we can specify my_dir manually:
 % mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';
 
-mydir = 'E:/SDSU_GEOG/Thesis/Data/Gages-II/usgs_streamflow_2/mm_day';
+% path_observed_time_series = "E:/SDSU_GEOG/Thesis/Data/CAMELS/camels-20230412T1401Z/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/"
+
+% mydir = 'E:/SDSU_GEOG/Thesis/Data/Gages-II/usgs_streamflow_2/mm_day';
+mydir = 'E:/SDSU_GEOG/Thesis/Data/Signatures/camels_data_prepped'
 cd(mydir)
 addpath(genpath(mydir));
 
@@ -51,16 +54,33 @@ addpath(genpath(mydir));
 % Q = data.Q; % streamflow [mm/day]
 
 
-% Load the CSV file into a table
-filename_test = '01017550.csv';
-opts = detectImportOptions(filename_test)
+% % Load the CSV file into a table
+% filename_test = '01017550.csv';
+% opts = detectImportOptions(filename_test)
+% 
+% % filename_new = '01021470.csv'
+% filename_new = '04136000.csv'
+% data = readtable(filename_new, opts);
+% 
+% % Access the columns by variable names
+% t = datetime(data.datetime);
+% Q = data.q_mm_day;
 
-filename_new = '01021470.csv'
-data = readtable(filename_new, opts);
+% worflow for CAMELS streamflow data instead, where just have exported
+% daily flow data;
 
-% Access the columns by variable names
-t = datetime(data.datetime);
-Q = data.q_mm_day;
+filename_camels = '2312200.csv'
+data_flow = readtable(filename_camels)
+Q = data_flow.Var1
+
+start_date = datetime(1989, 10, 1);
+end_date = datetime(2009, 9, 30);
+% Calculate the total number of days
+total_days = days(end_date - start_date) + 1;
+% Generate daily datetimes
+t = start_date + caldays(0:total_days-1);
+
+
 % Add more variable assignments as needed
 
 % Now you can work with the variables
@@ -81,6 +101,11 @@ ylabel('Streamflow [mm/day]')
 % https://TOSSHtoolbox.github.io/TOSSH/p1_overview.html.
 
 %% Calculate signatures
+
+recession_length = 5;
+n_start = 1;
+eps = 0;
+
 % Some signatures can be calculated using different methods and/or
 % parameter values. For example, there are different options to calculate 
 % the baseflow index (BFI). The default method is the UKIH smoothed minima 
@@ -95,20 +120,20 @@ BFI_UKIH10 = sig_BFI(Q,t,'method','UKIH','parameters',10);
 % More details and examples on the different methods/parameters can be
 % found in the code of each function (e.g. sig_BFI.m).
 
-Recession_a_Seasonality = sig_SeasonalVarRecessions(Q,t, 'plot_results', true)
+Recession_a_Seasonality = sig_SeasonalVarRecessions(Q,t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start)
 
-MRC_num_segments = sig_MRC_SlopeChanges(Q,t, 'plot_results', true)
+MRC_num_segments = sig_MRC_SlopeChanges(Q,t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start)
 
-Spearmans_rho = sig_RecessionUniqueness(Q,t, 'plot_results', true)
+Spearmans_rho = sig_RecessionUniqueness(Q,t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start)
 
 VariabilityIndex = sig_VariabilityIndex(Q,t)
 
-BaseflowRecessionK = sig_BaseflowRecessionK(Q, t, 'plot_results', true)
+BaseflowRecessionK = sig_BaseflowRecessionK(Q, t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start)
 
 
 
 [RecessionParametersTemp,~,~,RecessionParameters_error_str_temp] = ...
-    sig_RecessionAnalysis(Q,t, 'plot_results', true);
+    sig_RecessionAnalysis(Q,t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start);
 RecessionParameters(1) = median((RecessionParametersTemp(:,1)),'omitnan');
 RecessionParameters(2) = median(RecessionParametersTemp(:,2),'omitnan');
 RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q(Q>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
@@ -116,7 +141,7 @@ ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)
 RecessionParameters(3) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
 RecessionParameters_error_str = RecessionParameters_error_str_temp;
 [MRC_num_segments,Segment_slopes,~,MRC_num_segments_error_str] = ...
-    sig_MRC_SlopeChanges(Q,t,'plot_results',true);
+    sig_MRC_SlopeChanges(Q,t,'plot_results',true,'eps',eps,'recession_length',recession_length,'n_start',n_start);
 First_Recession_Slope = Segment_slopes(1);
 if length(Segment_slopes) >= 2
     Mid_Recession_Slope = Segment_slopes(2);
