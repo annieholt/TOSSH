@@ -40,9 +40,9 @@ function [CAMELS_data] = loadCAMELSstruct()
 % ./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/*/*_streamflow_qc.txt  
 % (18 folders with 671 files; contain streamflow time series)
 
-path_catchment_attributes = "./example/example_data/CAMELS_v2.0/camels_attributes_v2.0/camels_attributes_v2.0/";
-path_modelled_time_series = "./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_modelOutput_daymet/model_output_daymet/model_output/flow_timeseries/daymet/"; 
-path_observed_time_series = "./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/"; 
+path_catchment_attributes = "E:/SDSU_GEOG/Thesis/Data/CAMELS/camels-20230412T1401Z/";
+path_modelled_time_series = "E:/SDSU_GEOG/Thesis/Data/CAMELS/camels-20230412T1401Z/basin_timeseries_v1p2_modelOutput_daymet/model_output_daymet/model_output/flow_timeseries/daymet/"; 
+path_observed_time_series = "E:/SDSU_GEOG/Thesis/Data/CAMELS/camels-20230412T1401Z/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/"; 
 
 if ~(exist(path_catchment_attributes) == 7)
     error('Cannot find local path. You can download CAMELS from https://ral.ucar.edu/solutions/products/camels.')
