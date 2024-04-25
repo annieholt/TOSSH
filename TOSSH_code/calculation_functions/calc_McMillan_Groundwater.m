@@ -135,6 +135,12 @@ VariabilityIndex_error_str = strings(size(Q_mat,1),1);
 % (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).
 BFI = NaN(size(Q_mat,1),1);
 BFI_error_str = strings(size(Q_mat,1),1);
+
+% AH ADDITION: BFI, 90 days from UKIH
+BFI_90 = NaN(size(Q_mat,1),1);
+BFI_90_error_str = strings(size(Q_mat,1),1);
+
+
 % Baseflow recession constant K (assuming exponential recession behaviour),
 % slower recessions show greater groundwater influence and longer 
 % subsurface flow paths (Safeeq et al., 2013).
@@ -177,6 +183,9 @@ for i = 1:size(Q_mat,1)
     
     % Section: Baseflow
     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','UKIH');
+
+    [BFI_90(i),~,BFI_90_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','UKIH', 'parameters', 90);
+    
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...
         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start); 
     
@@ -201,6 +210,10 @@ results.MRC_num_segments = MRC_num_segments;
 results.MRC_num_segments_error_str = MRC_num_segments_error_str;
 results.BFI = BFI;
 results.BFI_error_str = BFI_error_str;
+
+results.BFI_90 = BFI_90;
+results.BFI_90_error_str = BFI_90_error_str;
+
 results.BaseflowRecessionK = BaseflowRecessionK;
 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
 results.First_Recession_Slope = First_Recession_Slope;
