@@ -69,9 +69,19 @@ addpath(genpath(mydir));
 % worflow for CAMELS streamflow data instead, where just have exported
 % daily flow data;
 
-filename_camels = '5057200.csv'
-data_flow = readtable(filename_camels)
-Q = data_flow.Var1
+% filename_camels = '5057200.csv'
+% data_flow = readtable(filename_camels)
+% Q = data_flow.Var1
+
+subdir_flow = 'streamflow_1989_2009';
+filename_camels_flow = fullfile(subdir_flow, '5057200.csv');
+data_flow = readtable(filename_camels_flow);
+Q = data_flow.Var1;
+
+subdir_precip = 'precipitation_1989_2009';
+filename_camels_precip = fullfile(subdir_precip, '5057200.csv'); 
+data_precip = readtable(filename_camels_precip);
+P = data_precip.Var1;
 
 start_date = datetime(1989, 10, 1);
 end_date = datetime(2009, 9, 30);
@@ -130,7 +140,7 @@ VariabilityIndex = sig_VariabilityIndex(Q,t)
 
 BaseflowRecessionK = sig_BaseflowRecessionK(Q, t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start)
 
-
+EventRR = sig_EventRR(Q,t,P, 'plot_results', true)
 
 [RecessionParametersTemp,~,~,RecessionParameters_error_str_temp] = ...
     sig_RecessionAnalysis(Q,t, 'plot_results', true, 'eps',eps,'recession_length',recession_length,'n_start',n_start);
